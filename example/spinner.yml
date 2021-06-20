@@ -1,0 +1,283 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: cmd.exe
+  
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: C:\projects\spinner
+  
+  # Export additional ENV variables
+  env:
+    recording: true
+  
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 120
+  
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 30
+  
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+  
+  # Quality
+  # 1 - 100
+  quality: 100
+  
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+  
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: 2000
+  
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  frameBox:
+    type: floating
+    title: Isa's Terminal
+    style:
+      border: 0px black solid
+      # boxShadow: none
+      # margin: 0px
+  
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+  
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+  
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  
+  # The size of the font
+  fontSize: 12
+  
+  # The height of lines
+  lineHeight: 1
+  
+  # The spacing between letters
+  letterSpacing: 0
+  
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#afafaf"
+    cursor: "#c7c7c7"
+    black: "#232628"
+    red: "#fc4384"
+    green: "#b3e33b"
+    yellow: "#ffa727"
+    blue: "#75dff2"
+    magenta: "#ae89fe"
+    cyan: "#708387"
+    white: "#d5d5d0"
+    brightBlack: "#626566"
+    brightRed: "#ff7fac"
+    brightGreen: "#c8ed71"
+    brightYellow: "#ebdf86"
+    brightBlue: "#75dff2"
+    brightMagenta: "#ae89fe"
+    brightCyan: "#b1c6ca"
+    brightWhite: "#f9f9f4"
+  
+# Records, feel free to edit them
+records:
+  - delay: 517
+    content: "\e[2J\e[m\e[HMicrosoft Windows [Version 10.0.21390.1010]\e]0;C:\\WINDOWS\\SYSTEM32\\cmd.exe\a\e[?25h"
+  - delay: 17
+    content: "\e[?25l\r\n(c) Microsoft Corporation. All rights reserved.\e[4;1HC:\\projects\\spinner>\e[?25h"
+  - delay: 377
+    content: p
+  - delay: 99
+    content: h
+  - delay: 59
+    content: p
+  - delay: 176
+    content: ' '
+  - delay: 132
+    content: e
+  - delay: 109
+    content: x
+  - delay: 208
+    content: a
+  - delay: 99
+    content: m
+  - delay: 177
+    content: p
+  - delay: 99
+    content: l
+  - delay: 84
+    content: e
+  - delay: 110
+    content: .
+  - delay: 189
+    content: p
+  - delay: 116
+    content: h
+  - delay: 67
+    content: p
+  - delay: 174
+    content: "\r\n"
+  - delay: 18
+    content: "\e]0;C:\\WINDOWS\\SYSTEM32\\cmd.exe - php  example.php\a"
+  - delay: 159
+    content: ⠋ Stopping...
+  - delay: 76
+    content: ' '
+  - delay: 16
+    content: "\e[102X\e[102C"
+  - delay: 250
+    content: "\r⠙ Starting..."
+  - delay: 68
+    content: ' '
+  - delay: 20
+    content: "\e[102X\e[102C"
+  - delay: 231
+    content: "\r⠹ Starting..."
+  - delay: 90
+    content: ' '
+  - delay: 19
+    content: "\e[102X\e[102C"
+  - delay: 251
+    content: "\r⠸ Starting..."
+  - delay: 83
+    content: ' '
+  - delay: 16
+    content: "\e[102X\e[102C"
+  - delay: 243
+    content: "\r⠼ Running too long process..."
+  - delay: 82
+    content: ' '
+  - delay: 15
+    content: "\e[86X\e[86C"
+  - delay: 242
+    content: "\r⠴ Running too long process..."
+  - delay: 89
+    content: ' '
+  - delay: 19
+    content: "\e[86X\e[86C"
+  - delay: 231
+    content: "\r⠦ Running too long process..."
+  - delay: 90
+    content: ' '
+  - delay: 19
+    content: "\e[86X\e[86C"
+  - delay: 241
+    content: "\r⠧ Running too long process..."
+  - delay: 69
+    content: ' '
+  - delay: 20
+    content: "\e[86X\e[86C"
+  - delay: 241
+    content: "\r⠇ Running too long process..."
+  - delay: 75
+    content: ' '
+  - delay: 16
+    content: "\e[86X\e[86C"
+  - delay: 239
+    content: "\r⠏ Running too long process..."
+  - delay: 69
+    content: ' '
+  - delay: 21
+    content: "\e[86X\e[86C"
+  - delay: 241
+    content: "\r⠋ Running too long process..."
+  - delay: 89
+    content: ' '
+  - delay: 20
+    content: "\e[86X\e[86C"
+  - delay: 240
+    content: "\r⠙ Running too long process..."
+  - delay: 79
+    content: ' '
+  - delay: 21
+    content: "\e[86X\e[86C"
+  - delay: 240
+    content: "\r⠹ Running too long process..."
+  - delay: 90
+    content: ' '
+  - delay: 19
+    content: "\e[86X\e[86C"
+  - delay: 231
+    content: "\r⠸ Running too long process..."
+  - delay: 69
+    content: ' '
+  - delay: 16
+    content: "\e[86X\e[86C"
+  - delay: 235
+    content: "\r⠼ Running too long process..."
+  - delay: 83
+    content: ' '
+  - delay: 16
+    content: "\e[86X\e[86C"
+  - delay: 241
+    content: "\r⠴ Running too long process..."
+  - delay: 69
+    content: ' '
+  - delay: 20
+    content: "\e[86X\e[86C"
+  - delay: 233
+    content: "\r⠦ Stopping..."
+  - delay: 88
+    content: ' '
+  - delay: 16
+    content: "\e[102X\e[102C"
+  - delay: 234
+    content: "\r⠧ Stopping..."
+  - delay: 79
+    content: ' '
+  - delay: 20
+    content: "\e[102X\e[102C"
+  - delay: 241
+    content: "\r⠇ Stopping..."
+  - delay: 85
+    content: ' '
+  - delay: 16
+    content: "\e[102X\e[102C"
+  - delay: 59
+    content: "\r✔️ Completed."
+  - delay: 80
+    content: ' '
+  - delay: 19
+    content: "\e[102X\r\nProcess executed in 6 seconds.\r\nC:\\projects\\spinner>\e]0;C:\\WINDOWS\\SYSTEM32\\cmd.exe\a"
+  - delay: 544
+    content: e
+  - delay: 247
+    content: x
+  - delay: 163
+    content: i
+  - delay: 139
+    content: t
+  - delay: 318
+    content: ' '
+  - delay: 574
+    content: "\r\n"

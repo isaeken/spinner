@@ -1,0 +1,32 @@
+{
+    "name": "isaeken/spinner",
+    "version": "1.0.0",
+    "description": "Elegant spinner for interactive CLI apps.",
+    "license": "MIT",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "homepage": "https://github.com/isaeken/spinner",
+    "readme": "README.md",
+    "authors": [
+        {
+            "name": "Isa Eken",
+            "email": "hello@isaeken.com.tr",
+            "homepage": "https://www.isaeken.com.tr",
+            "role": "Founder"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^8.47",
+        "symfony/var-dumper": "^5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "IsaEken\\Spinner\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
