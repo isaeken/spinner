@@ -5,6 +5,9 @@ namespace IsaEken\Spinner;
 
 
 use Closure;
+use Exception;
+use IsaEken\Spinner\Enums\Status;
+use IsaEken\Spinner\Interfaces\ThemeInterface;
 
 class Spinner
 {
@@ -14,19 +17,19 @@ class Spinner
     private static Spinner $spinner;
 
     /**
-     * @var LockFile $lockFile
+     * @var PhpProcess $process
      */
-    private static LockFile $lockFile;
-
-    /**
-     * @var $pid
-     */
-    private static $pid;
+    private PhpProcess $process;
 
     /**
      * @var mixed $output
      */
-    public static mixed $output = null;
+    private mixed $output = null;
+
+    /**
+     * @var string $status
+     */
+    private string $status = Status::Success;
 
     /**
      * @return static
@@ -41,40 +44,73 @@ class Spinner
     }
 
     /**
-     * @return LockFile
+     * @return PhpProcess
      */
-    public static function getLockFile(): LockFile
+    public function getProcess(): PhpProcess
     {
-        if (! isset(static::$lockFile)) {
-            static::$lockFile = new LockFile;
-        }
-
-        return static::$lockFile;
+        return $this->process;
     }
 
     /**
      * @return mixed
      */
-    public static function getOutput(): mixed
+    public function getOutput(): mixed
     {
-        return static::$output;
+        return $this->output;
     }
 
     /**
-     * @return int
+     * @return static
+     * @throws Exception
      */
-    public static function getTerminalWidth(): int
+    public function start(): static
     {
-        $os = php_uname('s');
-        if ($os === 'Windows NT') {
-            return intval(exec(__DIR__ . '/../bin/get_width.bat'));
-        }
-        else if ($os === 'Linux') {
-            list($rows, $cols) = explode(' ', @exec('stty size 2>/dev/null') ?: '0 0');
-            return intval($cols);
-        }
+        $this->process = (new PhpProcess(
+            realpath(__DIR__  . '/../bin/spin.php'),
+            realpath(__DIR__ . '/../'),
+        ))->run();
+        return $this;
+    }
 
-        return 0;
+    /**
+     * @return $this
+     * @throws Exception
+     */
+    public function stop(): static
+    {
+        $this->getProcess()->kill();
+        usleep(10000);
+
+        /** @var ThemeInterface $theme */
+        $theme = LockFile::getInstance()->get('theme_class');
+
+        $line = sprintf(
+            '%s%s%s%s %s%s',
+            chr(27),
+            '[0G',
+            $theme::colors()[$this->status],
+            $theme::icons()[$this->status],
+            $theme::messages()[$this->status],
+            "\e[39m",
+        );
+
+        print $line;
+        for ($i = Helpers::getTerminalWidth() - mb_strlen($line); $i > 0; $i--) {
+            print ' ';
+        }
+        print PHP_EOL;
+
+        return $this;
+    }
+
+    /**
+     * @param Closure|callable $closure
+     * @return static
+     */
+    public function call(Closure|callable $closure): static
+    {
+        $this->output = $closure();
+        return $this;
     }
 
     /**
@@ -83,104 +119,36 @@ class Spinner
      */
     public static function setTitle(string $title): static
     {
-        static::getLockFile()->update($title);
-        return static::getInstance();
-    }
-
-    /**
-     * @param string|null $title
-     * @return static
-     */
-    public static function start(string|null $title = null): static
-    {
         $instance = static::getInstance();
-
-        $os = php_uname('s');
-        $cwd = realpath(__DIR__ . '/../');
-        $bin = PHP_BINARY;
-        $script = __DIR__ . '/../bin/spin.php';
-        if ($title !== null && mb_strlen($title) > 0) {
-            static::getLockFile()->write($title);
-        }
-
-        $cmd = sprintf('%s %s', $bin, $script);
-
-        if ($os === 'Windows NT') {
-            if (is_resource($process = proc_open('start /b ' . $cmd, [STDIN, STDOUT], $pipes, $cwd, NULL))) {
-                $ppid = proc_get_status($process);
-                $pid = $ppid['pid'];
-            }
-            else {
-                echo 'Failed to execute child process.';
-            }
-
-            $output = array_filter(explode(" ", shell_exec("wmic process get parentprocessid,processid | find \"$pid\"")));
-            array_pop($output);
-            static::$pid = end($output);
-        }
-        else if ($os === 'Linux') {
-            if (is_resource($process = proc_open('nohup ' . $cmd, [[STDIN, STDOUT]], $pipes, $cwd, NULL))) {
-                $ppid = proc_get_status($process);
-                $pid = $ppid['pid'];
-                static::$pid = $pid + 1;
-            }
-            else {
-                echo 'Failed to execute child process.';
-            }
-        }
-
+        LockFile::getInstance()
+            ->unserialize()
+            ->set('title', $title)
+            ->serialize();
         return $instance;
     }
 
     /**
-     * @return $this
-     */
-    public static function stop(): static
-    {
-        $os = php_uname('s');
-        if ($os == 'Windows NT') {
-            exec(sprintf('taskkill /pid %s /F', static::$pid));
-        }
-        else if ($os == 'Linux') {
-            exec(sprintf('kill -9 %s', static::$pid));
-        }
-
-        usleep(10000);
-
-        $line = sprintf(
-            '%s%s%s %s',
-            chr(27),
-            '[0G',
-            '✔️',
-            'Completed.'
-        );
-        print $line;
-        for ($i = Spinner::getTerminalWidth() - mb_strlen($line); $i > 0; $i--) {
-            print ' ';
-        }
-        print PHP_EOL;
-
-        return static::getInstance();
-    }
-
-    /**
-     * @param Closure|callable $closure
+     * @param string $status
      * @return static
      */
-    public static function call(Closure|callable $closure): static
+    public static function setStatus(string $status = Status::Success): static
     {
         $instance = static::getInstance();
-        $instance::$output = $closure();
+        $instance->status = $status;
         return $instance;
     }
 
     /**
      * @param Closure|callable $closure
-     * @param string|null $title
      * @return mixed
+     * @throws Exception
      */
-    public static function run(Closure|Callable $closure, string|null $title = null): mixed
+    public static function run(Closure|Callable $closure): mixed
     {
-        return static::start($title)::call($closure)::stop()::getOutput();
+        return static::getInstance()
+            ->start()
+            ->call($closure)
+            ->stop()
+            ->getOutput();
     }
 }

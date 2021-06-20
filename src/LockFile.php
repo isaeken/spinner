@@ -4,6 +4,9 @@
 namespace IsaEken\Spinner;
 
 
+use Exception;
+use IsaEken\Spinner\Themes\DefaultTheme;
+
 class LockFile
 {
     /**
@@ -24,11 +27,48 @@ class LockFile
     }
 
     /**
+     * @var array $variables
+     */
+    private array $variables = [
+        'theme_class' => DefaultTheme::class,
+        'frame_speed' => 0.025, // seconds
+        'title' => '',
+    ];
+
+    /**
      * @return string
      */
     public function getFilePath(): string
     {
         return sys_get_temp_dir() . '/spin.lock';
+    }
+
+    /**
+     * @return $this
+     */
+    public function serialize(): static
+    {
+        file_put_contents($this->getFilePath(), serialize(json_encode($this->variables)));
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function unserialize(): static
+    {
+        try {
+            $unserialize = @json_decode(unserialize(file_get_contents($this->getFilePath())), true);
+        }
+        catch (Exception $exception) {
+            $unserialize = [];
+        }
+
+        foreach ($unserialize as $key => $value) {
+            $this->variables[$key] = $value;
+        }
+
+        return $this;
     }
 
     /**
@@ -42,39 +82,40 @@ class LockFile
     }
 
     /**
-     * @return string
+     * @param string $name
+     * @return mixed
      */
-    public function read(): string
+    public function __get(string $name)
     {
-        return file_get_contents(static::getFilePath());
+        return $this->variables[$name];
     }
 
     /**
-     * @param string $contents
-     * @return static
+     * @param string $name
+     * @param $value
      */
-    public function update(string $contents): static
+    public function __set(string $name, $value): void
     {
-        file_put_contents(static::getFilePath(), $contents);
-        return static::getInstance();
+        $this->variables[$name] = $value;
     }
 
     /**
-     * @param string $contents
-     * @return static
+     * @param string $name
+     * @return mixed
      */
-    public function write(string $contents): static
+    public function get(string $name): mixed
     {
-        file_put_contents(static::getFilePath(), static::read() . $contents);
-        return static::getInstance();
+        return $this->__get($name);
     }
 
     /**
-     * @param string $line
-     * @return static
+     * @param string $name
+     * @param mixed $value
+     * @return $this
      */
-    public function writeln(string $line): static
+    public function set(string $name, mixed $value): static
     {
-        return $this->write($line . PHP_EOL);
+        $this->__set($name, $value);
+        return $this;
     }
 }

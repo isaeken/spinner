@@ -1,8 +1,8 @@
 <?php
 
-use IsaEken\Spinner\Frames\DefaultFrames;
+use IsaEken\Spinner\Themes\DefaultTheme;
+use IsaEken\Spinner\Helpers;
 use IsaEken\Spinner\LockFile;
-use IsaEken\Spinner\Spinner;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -12,9 +12,19 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $lockFile = LockFile::getInstance();
 
 /**
+ * Calculate the frame speed.
+ */
+$frame_speed = $lockFile->get('frame_speed') * 1000000;
+
+/**
+ * Get the theme class.
+ */
+$theme_class = $lockFile->get('theme_class');
+
+/**
  * Create the frames array.
  */
-$frames = DefaultFrames::getFrames();
+$frames = DefaultTheme::frames();
 
 /**
  * Set current frame index.
@@ -33,8 +43,8 @@ while (true) {
         '%s%s%s %s',
         chr(27),
         '[0G',
-        DefaultFrames::getFrame($frame),
-        $lockFile->read()
+        $theme_class::frames()[$frame],
+        $lockFile->unserialize()->get('title'),
     );
 
     /**
@@ -45,7 +55,7 @@ while (true) {
     /**
      * Cleanup printed line.
      */
-    for ($i = Spinner::getTerminalWidth() - mb_strlen($line); $i > 0; $i--) {
+    for ($i = Helpers::getTerminalWidth() - mb_strlen($line); $i > 0; $i--) {
         print ' ';
     }
 
@@ -60,5 +70,5 @@ while (true) {
     /**
      * Wait the next frame.
      */
-    usleep(250000);
+    usleep($frame_speed);
 }
