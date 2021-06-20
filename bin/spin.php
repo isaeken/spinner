@@ -1,6 +1,5 @@
 <?php
 
-use IsaEken\Spinner\Themes\DefaultTheme;
 use IsaEken\Spinner\Helpers;
 use IsaEken\Spinner\LockFile;
 
@@ -9,7 +8,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 /**
  * Create the lock file instance.
  */
-$lockFile = LockFile::getInstance();
+$lockFile = LockFile::getInstance()->unserialize();
 
 /**
  * Calculate the frame speed.
@@ -24,7 +23,7 @@ $theme_class = $lockFile->get('theme_class');
 /**
  * Create the frames array.
  */
-$frames = DefaultTheme::frames();
+$frames = $theme_class::frames();
 
 /**
  * Set current frame index.
@@ -43,7 +42,7 @@ while (true) {
         '%s%s%s %s',
         chr(27),
         '[0G',
-        $theme_class::frames()[$frame],
+        $frames[$frame],
         $lockFile->unserialize()->get('title'),
     );
 

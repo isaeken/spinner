@@ -24,7 +24,7 @@ echo "The result is: $result!";
 
 ## Installation
 
-You can install using compoer.
+You can install using composer.
 
 ````shell
 composer require isaeken/spinner

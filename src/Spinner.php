@@ -44,6 +44,15 @@ class Spinner
     }
 
     /**
+     * @return static
+     */
+    public static function flush(): static
+    {
+        LockFile::flush();
+        return static::$spinner = new static;
+    }
+
+    /**
      * @return PhpProcess
      */
     public function getProcess(): PhpProcess
@@ -78,8 +87,8 @@ class Spinner
      */
     public function stop(): static
     {
+        usleep(100000);
         $this->getProcess()->kill();
-        usleep(10000);
 
         /** @var ThemeInterface $theme */
         $theme = LockFile::getInstance()->get('theme_class');
@@ -114,17 +123,19 @@ class Spinner
     }
 
     /**
-     * @param string $title
+     * @param string|null $title
      * @return static
      */
-    public static function setTitle(string $title): static
+    public static function setTitle(string|null $title): static
     {
-        $instance = static::getInstance();
-        LockFile::getInstance()
-            ->unserialize()
-            ->set('title', $title)
-            ->serialize();
-        return $instance;
+        if (is_string($title)) {
+            LockFile::getInstance()
+                ->unserialize()
+                ->set('title', $title)
+                ->serialize();
+        }
+
+        return static::getInstance();
     }
 
     /**
@@ -139,16 +150,44 @@ class Spinner
     }
 
     /**
+     * @param ThemeInterface|string|null $theme
+     * @return static
+     */
+    public static function setTheme(ThemeInterface|string|null $theme): static
+    {
+        if ($theme instanceof ThemeInterface) {
+            LockFile::getInstance()->set('theme_class', $theme::class)->serialize();
+        }
+        else if (is_string($theme)) {
+            LockFile::getInstance()->set('theme_class', $theme)->serialize();
+        }
+
+        return static::getInstance();
+    }
+
+    /**
      * @param Closure|callable $closure
+     * @param ThemeInterface|string|null $theme
+     * @param string|null $title
      * @return mixed
      * @throws Exception
      */
-    public static function run(Closure|Callable $closure): mixed
+    public static function run(
+        Closure|Callable $closure,
+        ThemeInterface|string|null $theme = null,
+        string|null $title = 'Please wait...'
+    ): mixed
     {
-        return static::getInstance()
+        $instance = static::getInstance()
+            ->setTheme($theme)
+            ->setTitle($title)
             ->start()
             ->call($closure)
-            ->stop()
-            ->getOutput();
+            ->stop();
+
+        $output = $instance->getOutput();
+        $instance->flush();
+
+        return $output;
     }
 }

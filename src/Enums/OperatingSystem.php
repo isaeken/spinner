@@ -4,6 +4,10 @@
 namespace IsaEken\Spinner\Enums;
 
 
+/**
+ * Class OperatingSystem
+ * @package IsaEken\Spinner\Enums
+ */
 abstract class OperatingSystem
 {
     const Windows = 'windows';

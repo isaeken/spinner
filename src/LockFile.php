@@ -20,10 +20,18 @@ class LockFile
     public static function getInstance(): static
     {
         if (! isset(static::$instance)) {
-            static::$instance = new LockFile;
+            static::$instance = (new LockFile)->serialize();
         }
 
         return static::$instance;
+    }
+
+    /**
+     * @return static
+     */
+    public static function flush(): static
+    {
+        return static::$instance = (new static)->serialize();
     }
 
     /**

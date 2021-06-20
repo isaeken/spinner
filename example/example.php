@@ -2,6 +2,7 @@
 
 use IsaEken\Spinner\Enums\Status;
 use IsaEken\Spinner\Spinner;
+use IsaEken\Spinner\Themes\ClassicTheme;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -31,3 +32,8 @@ $executed_in = Spinner::run(function () use ($started_at, $spinner) {
 });
 
 echo 'Process executed in ' . $executed_in . ' seconds.';
+
+echo Spinner::run(function () {
+    sleep(4);
+    return 'This process executed with classic theme.';
+}, ClassicTheme::class);
