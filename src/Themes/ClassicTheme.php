@@ -29,9 +29,9 @@ class ClassicTheme extends DefaultTheme implements ThemeInterface
     public static function icons(): Collection
     {
         return collect([
-            Status::Success => ' - SUCCESS - ',
-            Status::Warning => ' - WARNING - ',
-            Status::Failed  => ' -  FAIL  - ',
+            Status::Success => '[ OK ]',
+            Status::Warning => '[ WARN ]',
+            Status::Failed  => '[ FAIL ]',
         ]);
     }
 }
