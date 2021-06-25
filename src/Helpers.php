@@ -83,4 +83,18 @@ class Helpers
     {
         return static::getTerminalSizes()->rows;
     }
+
+    /**
+     * @return bool
+     */
+    public static function isCli(): bool
+    {
+        return (
+            defined('STDIN') ||
+            php_sapi_name() === 'cli' ||
+            array_key_exists('SHELL', $_ENV) ||
+            (empty($_SERVER['REMOTE_ADDR']) && ! isset($_SERVER['HTTP_USER_AGENT']) && count($_SERVER['argv']) > 0) ||
+            ! array_key_exists('REQUEST_METHOD', $_SERVER)
+        );
+    }
 }

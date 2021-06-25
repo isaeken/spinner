@@ -34,10 +34,15 @@ class Spinner
 
     /**
      * @return static
+     * @throws Exception
      */
     public static function getInstance(): static
     {
         if (! isset(static::$spinner)) {
+            if (! Helpers::isCli()) {
+                throw new Exception('Spinner is only can run in cli mode.');
+            }
+
             static::$spinner = new static;
         }
 
