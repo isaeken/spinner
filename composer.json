@@ -21,6 +21,9 @@
         "illuminate/support": "^8.47",
         "symfony/var-dumper": "^5.3"
     },
+    "suggest": {
+        "ext-pcntl": "Allows terminate running processes in unix systems."
+    },
     "autoload": {
         "psr-4": {
             "IsaEken\\Spinner\\": "src/"

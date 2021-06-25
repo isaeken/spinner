@@ -6,6 +6,7 @@ namespace IsaEken\Spinner;
 
 use Closure;
 use Exception;
+use IsaEken\Spinner\Enums\OperatingSystem;
 use IsaEken\Spinner\Enums\Status;
 use IsaEken\Spinner\Interfaces\ThemeInterface;
 
@@ -178,7 +179,24 @@ class Spinner
         string|null $title = 'Please wait...'
     ): mixed
     {
-        $instance = static::getInstance()
+        $instance = static::getInstance();
+        $terminate = function () use ($instance) {
+            $instance->getProcess()->kill();
+            print PHP_EOL . "\e[39m" . 'Process Terminated.' . PHP_EOL;
+            exit;
+        };
+
+        if (Helpers::getOperatingSystem() === OperatingSystem::Windows) {
+            sapi_windows_set_ctrl_handler($terminate);
+        }
+        else if (Helpers::getOperatingSystem() === OperatingSystem::Linux) {
+            if (extension_loaded('pcntl')) {
+                declare(ticks = 1);
+                pcntl_signal(SIGINT, $terminate);
+            }
+        }
+
+        $instance
             ->setTheme($theme)
             ->setTitle($title)
             ->start()
