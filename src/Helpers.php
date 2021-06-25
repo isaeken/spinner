@@ -10,20 +10,62 @@ use IsaEken\Spinner\Enums\OperatingSystem;
 class Helpers
 {
     /**
+     * @var string|null $operatingSystem
+     */
+    private static string|null $operatingSystem = null;
+
+    /**
+     * @var object|null $terminalSizes
+     */
+    private static object|null $terminalSizes = null;
+
+    /**
      * @return string
      */
     public static function getOperatingSystem(): string
     {
-        $os = Str::of(php_uname('s'))->trim()->lower();
+        if (static::$operatingSystem === null) {
+            $os = Str::of(php_uname('s'))->trim()->lower();
 
-        if ($os->contains(OperatingSystem::Windows)) {
-            return OperatingSystem::Windows;
-        }
-        else if ($os->contains(OperatingSystem::Linux)) {
-            return OperatingSystem::Linux;
+            if ($os->contains(OperatingSystem::Windows)) {
+                return static::$operatingSystem = OperatingSystem::Windows;
+            }
+            else if ($os->contains(OperatingSystem::Linux)) {
+                return static::$operatingSystem = OperatingSystem::Linux;
+            }
+
+            return static::$operatingSystem = OperatingSystem::Unknown;
         }
 
-        return OperatingSystem::Unknown;
+        return static::$operatingSystem;
+    }
+
+    /**
+     * @return object
+     */
+    public static function getTerminalSizes(): object
+    {
+        if (static::$terminalSizes === null) {
+            $os = static::getOperatingSystem();
+            $rows = 0;
+            $columns = 0;
+
+            if ($os === OperatingSystem::Linux) {
+                list($rows, $columns) = explode(' ', @exec('stty size 2>/dev/null') ?: '0 0');
+            }
+            else if ($os === OperatingSystem::Windows) {
+                $json = json_decode(@exec(__DIR__ . '/../bin/get_terminal_size.bat'));
+                $rows = $json->rows;
+                $columns = $json->columns;
+            }
+
+            return static::$terminalSizes = (object) [
+                'rows' => intval($rows),
+                'columns' => intval($columns),
+            ];
+        }
+
+        return static::$terminalSizes;
     }
 
     /**
@@ -31,16 +73,14 @@ class Helpers
      */
     public static function getTerminalWidth(): int
     {
-        $os = static::getOperatingSystem();
+        return static::getTerminalSizes()->columns;
+    }
 
-        if ($os === OperatingSystem::Linux) {
-            list($rows, $columns) = explode(' ', @exec('stty size 2>/dev/null') ?: '0 0');
-            return intval($columns);
-        }
-        else if ($os === OperatingSystem::Windows) {
-            return intval(exec(__DIR__ . '/../bin/get_width.bat'));
-        }
-
-        return 0;
+    /**
+     * @return int
+     */
+    public static function getTerminalHeight(): int
+    {
+        return static::getTerminalSizes()->rows;
     }
 }
