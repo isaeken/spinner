@@ -118,7 +118,7 @@ class PhpProcess
         }
         else if ($os === OperatingSystem::Linux) {
             $process = proc_open(
-                'nohup ' . $this->generateCommand(),
+                $this->generateCommand(),
                 $descriptor_spec,
                 $pipes,
                 $cwd,

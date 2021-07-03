@@ -37,3 +37,5 @@ echo Spinner::run(function () {
     sleep(4);
     return 'This process executed with classic theme.';
 }, ClassicTheme::class);
+
+echo PHP_EOL;

@@ -102,7 +102,7 @@ class Spinner
         $line = sprintf(
             '%s%s%s%s %s%s',
             chr(27),
-            '[0G',
+            Helpers::getOperatingSystem() === OperatingSystem::Windows ? '[0G' : "\033[1A\033[1A",
             $theme::colors()[$this->status],
             $theme::icons()[$this->status],
             $theme::messages()[$this->status],
