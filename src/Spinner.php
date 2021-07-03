@@ -131,6 +131,7 @@ class Spinner
     /**
      * @param string|null $title
      * @return static
+     * @throws Exception
      */
     public static function setTitle(string|null $title): static
     {
@@ -147,6 +148,7 @@ class Spinner
     /**
      * @param string $status
      * @return static
+     * @throws Exception
      */
     public static function setStatus(string $status = Status::Success): static
     {
@@ -158,6 +160,7 @@ class Spinner
     /**
      * @param ThemeInterface|string|null $theme
      * @return static
+     * @throws Exception
      */
     public static function setTheme(ThemeInterface|string|null $theme): static
     {
