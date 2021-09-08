@@ -10,7 +10,7 @@ namespace IsaEken\Spinner\Enums;
  */
 abstract class Status
 {
-    const Success   = 'success';
-    const Warning   = 'warning';
-    const Failed    = 'failed';
+    public const Success = 'success';
+    public const Warning = 'warning';
+    public const Failed = 'failed';
 }
