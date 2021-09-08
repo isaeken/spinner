@@ -9,6 +9,7 @@ use Exception;
 use IsaEken\Spinner\Enums\OperatingSystem;
 use IsaEken\Spinner\Enums\Status;
 use IsaEken\Spinner\Interfaces\ThemeInterface;
+use Throwable;
 
 class Spinner
 {
@@ -31,6 +32,11 @@ class Spinner
      * @var string $status
      */
     private string $status = Status::Success;
+
+    /**
+     * @var Exception|null $exception
+     */
+    private Exception|null $exception = null;
 
     /**
      * @return static
@@ -72,6 +78,14 @@ class Spinner
     public function getOutput(): mixed
     {
         return $this->output;
+    }
+
+    /**
+     * @return Exception|null
+     */
+    public function getException(): Exception|null
+    {
+        return $this->exception;
     }
 
     /**
@@ -124,7 +138,12 @@ class Spinner
      */
     public function call(Closure|callable $closure): static
     {
-        $this->output = $closure();
+        try {
+            $this->output = $closure();
+        } catch (Exception $exception) {
+            $this->exception = $exception;
+        }
+
         return $this;
     }
 
@@ -178,8 +197,9 @@ class Spinner
      * @param Closure|callable $closure
      * @param ThemeInterface|string|null $theme
      * @param string|null $title
+     *
      * @return mixed
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public static function run(
         Closure|Callable $closure,
@@ -214,6 +234,7 @@ class Spinner
         $output = $instance->getOutput();
         $instance->flush();
 
+        throw_if($instance->getException() !== null, $instance->getException());
         return $output;
     }
 }
