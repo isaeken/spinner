@@ -1,6 +1,6 @@
 {
     "name": "isaeken/spinner",
-    "version": "1.4.4",
+    "version": "1.4.5",
     "description": "Elegant spinner for interactive CLI apps.",
     "license": "MIT",
     "type": "library",

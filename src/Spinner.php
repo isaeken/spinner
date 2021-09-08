@@ -228,13 +228,16 @@ class Spinner
             ->setTheme($theme)
             ->setTitle($title)
             ->start()
-            ->call($closure)
-            ->stop();
+            ->call($closure);
 
-        $output = $instance->getOutput();
+        if ($failed = ($instance->getException() !== null)) {
+            $instance->status = Status::Failed;
+        }
+
+        $output = $instance->stop()->getOutput();
         $instance->flush();
 
-        throw_if($instance->getException() !== null, $instance->getException());
+        throw_if($failed, $instance->getException());
         return $output;
     }
 }
