@@ -43,7 +43,7 @@ class Spinner
                 throw new Exception('Spinner is only can run in cli mode.');
             }
 
-            static::$spinner = new static;
+            static::$spinner = new static();
         }
 
         return static::$spinner;
@@ -55,7 +55,7 @@ class Spinner
     public static function flush(): static
     {
         LockFile::flush();
-        return static::$spinner = new static;
+        return static::$spinner = new static();
     }
 
     /**
